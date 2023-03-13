@@ -307,3 +307,59 @@ def get_pins(observed)
 
   return result
 end
+
+#16 The Greatest Warrior
+
+class Warrior
+
+  attr_reader :level, :rank, :experience, :achievements
+
+  @@MAX_EXPERIENCE = 10000
+  @@RANKS = ["Pushover", "Novice", "Fighter", "Warrior", "Veteran", "Sage", "Elite", "Conqueror", "Champion", "Master", "Greatest"]
+  def initialize()
+    @level = 1
+    @rank = @@RANKS.first
+    @experience = 100
+    @achievements = []
+  end
+  def battle(level)
+    case true
+      when (level < 1 or level > 100) then "Invalid level"
+      when @level === level then update_experience(10, level: level)
+      when @level - level === 1 then update_experience(5, level: level)
+      when @level - level >= 2 then update_experience(0, level: level)
+      when ((@@RANKS.index(@rank) - (level/10).floor) <= -1 and (@level - level <= -5)) then "You've been defeated"
+      else update_experience(20 * ((level - @level).abs) * ((level - @level).abs), level: level)
+    end
+  end
+  def training(data)
+    puts data.inspect
+    if @level - data[2] >= 0
+      @achievements << data[0]
+      update_experience(data[1], achievement: data[0])
+    else "Not strong enough"
+    end
+  end
+  private
+  def update_level()
+    @level = (@experience/100).floor
+  end
+  def update_rank()
+    @rank = @@RANKS[(@level/10).floor]
+  end
+  def update_experience(amount, level: nil, achievement: nil)
+    levels = [@level, level]
+    @experience = @experience + amount > 10000 ? 10000 : @experience + amount
+    update_level()
+    update_rank()
+    if !level.nil?
+      case true
+        when levels[0] - levels[1] >= 2 then "Easy fight"
+        when ((levels[0] - levels[1] === 0) or (levels[0] - levels[1] === 1)) then "A good fight"
+        else "An intense fight"
+      end
+    else
+      achievement
+    end
+  end
+end
