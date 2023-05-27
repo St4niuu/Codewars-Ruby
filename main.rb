@@ -314,7 +314,6 @@ class Warrior
 
   attr_reader :level, :rank, :experience, :achievements
 
-  @@MAX_EXPERIENCE = 10000
   @@RANKS = ["Pushover", "Novice", "Fighter", "Warrior", "Veteran", "Sage", "Elite", "Conqueror", "Champion", "Master", "Greatest"]
   def initialize()
     @level = 1
@@ -333,7 +332,6 @@ class Warrior
     end
   end
   def training(data)
-    puts data.inspect
     if @level - data[2] >= 0
       @achievements << data[0]
       update_experience(data[1], achievement: data[0])
@@ -362,4 +360,24 @@ class Warrior
       achievement
     end
   end
+end
+
+#17 Scheduling
+
+def roundRobin(jobs, slice, index)
+  result = 0
+  while jobs[index] != 0
+    jobs.map!.with_index do |element, iterationIndex|
+      if element - slice <= 0 then
+        result += element
+        if index == iterationIndex then return result
+        end
+        0
+      else
+        result += slice
+        element - slice
+      end
+    end
+  end
+  result
 end
