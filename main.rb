@@ -381,3 +381,49 @@ def roundRobin(jobs, slice, index)
   end
   result
 end
+
+#18 Validate Sudoku with size 'NxN'
+
+class Sudoku
+  def initialize(data)
+    @board = data
+  end
+  def valid?
+    @board.map! do |element|
+      element.map!(&:to_s).map!(&:to_i)
+    end
+    n = @board.length
+    for x in 0...n
+      row = Set.new
+      column = Set.new
+      @board[x].each do |element|
+        if element > n or element < 1 then return false
+        else row.add(element)
+        end
+      end
+      for y in 0...n
+        if @board[y][x] > n or @board[y][x] < 1 then return false
+        else column.add(@board[y][x])
+        end
+      end
+      if row.length != n or column.length != n then return false end
+    end
+    squares = []
+    dimension = Math.sqrt(n).to_i
+    for blockX in 0...dimension
+      for blockY in 0...dimension
+        tmp = []
+        for y in blockY * dimension...blockY * dimension + dimension
+          for x in blockX * dimension...blockX * dimension + dimension
+            tmp << @board[x][y]
+          end
+        end
+        squares << tmp
+      end
+    end
+    squares.each do |element|
+      if Set.new(element).to_a.length != n then return false end
+    end
+    true
+  end
+end
