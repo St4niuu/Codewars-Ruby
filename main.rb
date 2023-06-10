@@ -427,3 +427,105 @@ class Sudoku
     true
   end
 end
+
+#19 Square and Cube of a Number Become Prime When Reversed
+
+def isPrime(n)
+  if n <= 1 then return false
+  elsif n == 2 then return true
+  else
+    if n % 2 == 1
+      (3..(Math.sqrt(n).floor)).step(2) do |x|
+        if n % x == 0 then return false end
+      end
+    else return false
+    end
+  end
+  true
+end
+
+@set = [89]
+
+def sq_cub_rev_prime(n)
+  if @set.length < n
+    counter = @set.last + 1
+    while true
+      values = [counter ** 2, counter ** 3]
+      values.map! {|element| element.to_s.reverse.to_i}
+      if isPrime(values[0])
+        if isPrime(values[1])
+          @set.push(counter)
+          return sq_cub_rev_prime(n)
+        end
+      end
+      counter += 1
+    end
+  else return @set[n - 1]
+  end
+end
+
+# To be optimized
+# Doesn't work as intended
+
+#20 Strings Mix
+
+def mix(s1, s2)
+  strings = [s1, s2]
+  letters = []
+  strings.each do |element|
+    tmp = {}
+    for letter in element.chars
+      if letter == letter.downcase
+        begin
+          tmp[letter] += 1
+        rescue
+          tmp[letter] = 1
+        end
+      end
+    end
+    letters << tmp
+  end
+  puts letters[1].index(letters[1].values.max)
+end
+
+# To get done
+
+#21 Human readable duration format
+
+def format_duration(seconds)
+
+  formats = ['years', 'days', 'hours', 'minutes', 'seconds']
+
+  values = []
+
+  dividers = [365, 24, 60, 60]
+
+  if seconds > 0
+    dividers.each_with_index do |_, index|
+      divider = 1
+      dividers[index..-1].each { |element| divider *= element }
+      tmp = (seconds/divider).floor
+      values.push(tmp)
+      seconds -= tmp * divider
+      if index == dividers.length - 1
+        values.push(seconds)
+      end
+    end
+  else return "now"
+  end
+
+  values = values.map.with_index do |element, index|
+    {value: element, format: formats[index]}
+  end.select do |element|
+    element[:value] != 0
+  end.map do |element|
+    format = element[:value] > 1 ? element[:format] : element[:format][0..-2]
+    "#{element[:value]} #{format}"
+  end
+
+  case values.length
+  when 1 then values[0]
+  else values[0..-2].join(", ") + " and #{values[-1]}"
+  end
+
+end
